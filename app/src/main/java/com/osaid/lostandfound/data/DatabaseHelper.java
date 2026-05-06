@@ -14,9 +14,8 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "lostandfound.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_NAME = "items";
-
     private static final String COL_ID = "id";
     private static final String COL_POST_TYPE = "post_type";
     private static final String COL_NAME = "name";
@@ -27,6 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_CATEGORY = "category";
     private static final String COL_IMAGE_PATH = "image_path";
     private static final String COL_TIMESTAMP = "timestamp";
+    private static final String COL_LATITUDE = "latitude";
+    private static final String COL_LONGITUDE = "longitude";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,7 +45,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_LOCATION + " TEXT, "
                 + COL_CATEGORY + " TEXT, "
                 + COL_IMAGE_PATH + " TEXT, "
-                + COL_TIMESTAMP + " TEXT)";
+                + COL_TIMESTAMP + " TEXT, "
+                + COL_LATITUDE + " REAL DEFAULT 0, "
+                + COL_LONGITUDE + " REAL DEFAULT 0)";
         db.execSQL(createTable);
     }
 
@@ -66,6 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_CATEGORY, item.getCategory());
         values.put(COL_IMAGE_PATH, item.getImagePath());
         values.put(COL_TIMESTAMP, item.getTimestamp());
+        values.put(COL_LATITUDE, item.getLatitude());
+        values.put(COL_LONGITUDE, item.getLongitude());
         long result = db.insert(TABLE_NAME, null, values);
         db.close();
         return result;
@@ -74,7 +79,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Item> getAllItems() {
         List<Item> items = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_ID + " DESC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM "
+        + TABLE_NAME + " ORDER BY " + COL_ID + " DESC", null);
+
 
         if (cursor.moveToFirst()) {
             do {
@@ -89,7 +96,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Item> getItemsByCategory(String category) {
         List<Item> items = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_CATEGORY + " = ? ORDER BY " + COL_ID + " DESC",
+        Cursor cursor = db.rawQuery("SELECT * FROM "
+        + TABLE_NAME + " WHERE " + COL_CATEGORY + " = ? ORDER BY " + COL_ID + " DESC",
                 new String[]{category});
 
         if (cursor.moveToFirst()) {
@@ -104,7 +112,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Item getItemById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + " = ?",
+        Cursor cursor = db.rawQuery("SELECT * FROM "
+        + TABLE_NAME + " WHERE " + COL_ID + " = ?",
                 new String[]{String.valueOf(id)});
 
         Item item = null;
@@ -133,7 +142,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATION)),
                 cursor.getString(cursor.getColumnIndexOrThrow(COL_CATEGORY)),
                 cursor.getString(cursor.getColumnIndexOrThrow(COL_IMAGE_PATH)),
-                cursor.getString(cursor.getColumnIndexOrThrow(COL_TIMESTAMP))
+                cursor.getString(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
+                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LATITUDE)),
+                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONGITUDE))
         );
     }
 }

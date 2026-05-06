@@ -11,11 +11,14 @@ public class Item {
     private String category;
     private String imagePath;
     private String timestamp;
+    private double latitude;
+    private double longitude;
 
     public Item() {}
 
     public Item(int id, String postType, String name, String phone, String description,
-                String date, String location, String category, String imagePath, String timestamp) {
+                String date, String location, String category, String imagePath, String timestamp,
+                double latitude, double longitude) {
         this.id = id;
         this.postType = postType;
         this.name = name;
@@ -26,6 +29,8 @@ public class Item {
         this.category = category;
         this.imagePath = imagePath;
         this.timestamp = timestamp;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getId() { return id; }
@@ -57,4 +62,10 @@ public class Item {
 
     public String getTimestamp() { return timestamp; }
     public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
+
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 }
